@@ -8,11 +8,11 @@ class Person():
         self.cpf = cpf
         self.age = age
 
-    def create_employee(self, emplo_type, salary, paymethod):
+    def create_employee(self, emplo_class, salary, paymethod):
         try:
-            return eval(emplo_type)(salary, paymethod, self)
+            return eval(emplo_class)(salary, paymethod, self)
         except TypeError:
-            return emplo_type(salary, paymethod, self)
+            return emplo_class(salary, paymethod, self)
 
 
 class Adress():
@@ -67,7 +67,7 @@ class AbstractEmployee(metaclass = ABCMeta):
     def __init__(self, salary, paymethod, person: Person):
         self.salary = salary
         self.paymethod = paymethod
-        self.syndicate = NoSyndicate()
+        self.syndicate = NoSyndicate
         self.adress = Adress()
         self.name = person.name
         self.age = person.age
@@ -77,8 +77,8 @@ class AbstractEmployee(metaclass = ABCMeta):
         return (f'{type(self).__name__}, salário:{self.salary}, paymethod:{self.paymethod}, '
         f'syndicate:{type(self.syndicate).__name__}, name:{self.name}, cpf:{self.cpf}, age:{self.age}')
 
-    def set_syndicate(self, value):
-        self.syndicate = Syndicate(value=value)
+    def set_syndicate(self, syndicate, id=None, value=None):
+        self.syndicate = eval(syndicate)(id, value)
 
     def remove_syndicate(self):
         self.syndicate = NoSyndicate()
@@ -160,3 +160,6 @@ class Commisioned(AbstractEmployee):
 
     def reg(self):
         print('Limpando histórico do comissionado')
+
+
+p = Person().create_employee()
