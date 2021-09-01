@@ -8,9 +8,9 @@ class Person():
         self.cpf = cpf
         self.age = age
 
-    def create_employee(self, emplo_class, salary, paymethod):
+    def create_employee(self, emplo_class, salary, paymethod, comissao=None):
         try:
-            return eval(emplo_class)(salary, paymethod, self)
+            return eval(emplo_class)(salary, paymethod, comissao, self)
         except TypeError:
             return emplo_class(salary, paymethod, self)
 
@@ -64,24 +64,29 @@ class AbstractSyndicate(metaclass = ABCMeta):
 
 class AbstractEmployee(metaclass = ABCMeta):
 
-    def __init__(self, salary, paymethod, person: Person):
+    def __init__(self, salary, paymethod, comissao, person: Person):
         self.salary = salary
         self.paymethod = paymethod
-        self.syndicate = NoSyndicate
+        self.syndicate = NoSyndicate()
         self.adress = Adress()
         self.name = person.name
         self.age = person.age
         self.cpf = person.cpf
+        self.set_comissao(comissao)
 
     def __str__(self):
         return (f'{type(self).__name__}, salário:{self.salary}, paymethod:{self.paymethod}, '
-        f'syndicate:{type(self.syndicate).__name__}, name:{self.name}, cpf:{self.cpf}, age:{self.age}')
+        f'syndicate:{type(self.syndicate).__name__}, name:{self.name}, cpf:{self.cpf}, age:{self.age} ')
 
     def set_syndicate(self, syndicate, id=None, value=None):
         self.syndicate = eval(syndicate)(id, value)
 
     def remove_syndicate(self):
         self.syndicate = NoSyndicate()
+
+    @abstractmethod
+    def set_comissao(self, value):
+        pass
 
     @abstractmethod
     def clear_his():
@@ -128,6 +133,9 @@ class NoSyndicate(AbstractSyndicate):
 
 class Hourly(AbstractEmployee):
 
+    def set_comissao(self, value):
+        return super().set_comissao(value)
+
     def accumulated_payment(self):
         print('Pagamento acumulado de horista')
 
@@ -139,6 +147,9 @@ class Hourly(AbstractEmployee):
         
 
 class Salaried(AbstractEmployee):
+
+    def set_comissao(self, value):
+        return super().set_comissao(value)
 
     def accumulated_payment(self):
         print('Salário acumulado do assalariado')
@@ -152,6 +163,9 @@ class Salaried(AbstractEmployee):
 
 class Commisioned(AbstractEmployee):
 
+    def set_comissao(self, value):
+        self.comissao = value
+
     def accumulated_payment(self):
         print('Salário acumulado do comissionado')
 
@@ -160,6 +174,3 @@ class Commisioned(AbstractEmployee):
 
     def reg(self):
         print('Limpando histórico do comissionado')
-
-
-p = Person().create_employee()
