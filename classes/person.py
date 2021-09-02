@@ -3,10 +3,9 @@ from abc import ABCMeta, abstractmethod
 
 class Person():
 
-    def __init__(self, name, cpf, age):
+    def __init__(self, name, cpf):
         self.name = name
         self.cpf = cpf
-        self.age = age
 
     def create_employee(self, emplo_class, salary, paymethod, comissao=None):
         try:
@@ -45,6 +44,9 @@ class AbstractSyndicate(metaclass = ABCMeta):
         self.set_id(id)
         self.set_default_taxe(value)
 
+    def __str__(self):
+        return f'taxas de serviço:{self.taxe_his}, id:{self.id}, taxa:{self.default_taxe}'
+
     @abstractmethod
     def set_id(self, id):
         pass
@@ -70,13 +72,13 @@ class AbstractEmployee(metaclass = ABCMeta):
         self.syndicate = NoSyndicate()
         self.adress = Adress()
         self.name = person.name
-        self.age = person.age
         self.cpf = person.cpf
         self.set_comissao(comissao)
 
     def __str__(self):
-        return (f'{type(self).__name__}, salário:{self.salary}, paymethod:{self.paymethod}, '
-        f'syndicate:{type(self.syndicate).__name__}, name:{self.name}, cpf:{self.cpf}, age:{self.age} ')
+        return (f'//{type(self).__name__}, salário:{self.salary}, paymethod:{self.paymethod}, '
+        f'syndicate:{type(self.syndicate).__name__}, name:{self.name}, cpf:{self.cpf}'
+        f'endereço: {self.adress.__str__()}, sindicato:{self.syndicate.__str__()}')
 
     def set_syndicate(self, syndicate, id=None, value=None):
         self.syndicate = eval(syndicate)(id, value)
@@ -119,13 +121,13 @@ class Syndicate(AbstractSyndicate):
 class NoSyndicate(AbstractSyndicate):
 
     def set_id(self, id):
-        pass
+        self.id = None
     
     def insert_taxe(self, value: float):
         pass
 
     def set_default_taxe(self, value: float):
-        pass
+        self.default_taxe = None
 
     def clear_his():
         pass

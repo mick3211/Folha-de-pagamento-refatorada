@@ -1,5 +1,4 @@
 from abc import ABCMeta, abstractmethod
-from person import Person
 
 
 class AbstractState(metaclass = ABCMeta):
@@ -34,7 +33,7 @@ class State():
     _undo_stack = []
     _redo_stack = []
 
-    @classmethod
+    @classmethod  # Empilha uma ação na pilha undo e limpa a redo
     def stack(cls, state, arg):
 
         cls._undo_stack.append(eval(state)(arg))
@@ -64,7 +63,7 @@ class Manager():
     _state = State()
     _employee_list = {}
 
-    def __new__(cls):
+    def __new__(cls):  # Garante que apenas uma instância da classe será criada
         if not cls.__instance:
             cls.__instance = super().__new__(cls)
         return cls.__instance
@@ -73,15 +72,10 @@ class Manager():
     def add_employee(cls, id, employee):
         cls._employee_list.update({id: employee})
         cls._state.stack('AddEmployeeState', id)
+        
+        print('Empregado adicionado', cls._employee_list, employee.__str__())
 
     @classmethod
     def del_employee(cls, id):
         employee = cls._employee_list.pop(id)
         cls._state.stack('RemoveEmployeeState', employee)
-
-
-man = Manager()
-p = Person('Mickael', '123', '20').create_employee('Commisioned', 4500, 'Bolto', 10)
-p2 = Person('José', '456', '20').create_employee('Salaried', 4510, 'Boltonaro')
-man.add_employee(p.cpf, p)
-man.add_employee(p2.cpf, p2)
