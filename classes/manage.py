@@ -27,6 +27,17 @@ class RemoveEmployeeState(AbstractState):
         print('Empregado Readicionado')
         return AddEmployeeState(self.employee.cpf)
 
+class UpdateEmployeeState(AbstractState):
+
+    def __init__(self, employee):
+        self.employee = employee
+
+    def execute(self):
+        employee = Manager._employee_list.pop(self.employee.cpf)
+        Manager._employee_list.update({self.employee.cpf: self.employee})
+        print('Informações restauradas')
+        return UpdateEmployeeState(employee)
+
 
 class State():
 
@@ -73,7 +84,7 @@ class Manager():
         cls._employee_list.update({id: employee})
         cls._state.stack('AddEmployeeState', id)
         
-        print('Empregado adicionado', cls._employee_list, employee)
+        print('--Empregado adicionado--', cls._employee_list, cls._employee_list[id])
 
     @classmethod
     def del_employee(cls, id):
@@ -83,5 +94,12 @@ class Manager():
             return False
         cls._state.stack('RemoveEmployeeState', employee)
 
-        print ('Empregado removido', employee.name)
+        print ('--Empregado removido--', employee)
         return True
+
+    @classmethod
+    def update_employee(cls, id, employee):
+        cls._state.stack('UpdateEmployeeState',employee)
+        cls._employee_list.update({id: employee})
+
+        print('--empregado editado--', cls._employee_list, cls._employee_list[id])

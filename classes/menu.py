@@ -121,25 +121,32 @@ class Menu():
 
             if event == 'Salvar':
                 name = values['name']
-                type = TYPES[values['type']]
-                paymethod = PAYMETHODS[values['paymethod']]
-                syndicate = NotSyndicate if not values['syndicate'] else Syndicate
-                adress = (values['cep'], values['numero'], values['rua'], values['bairro'], values['cidade'], values['estado'])
-
+                emplo_class = TYPES[values['type']]
+                paymethod = values['paymethod']
+                syndicate = 'NoSyndicate' if not values['syndicate'] else 'Syndicate'
+                adress = (values['cep'], values['rua'], values['numero'], values['bairro'], values['cidade'], values['estado'])
+                taxa = None
                 if values['agenda'] == 'Não alterar': agenda = None
                 else:
                     agenda = values['agenda'].split('.')
                     agenda = int(agenda[0])
 
                 try:
-                    taxa = float(values['taxa'])
-                except:
-                    sg.popup('VALOR DA TAXA SINDICAL INVÁLIDO', title='ERRO')
+                    comissao = float(values['comissao'])/100
+                except ValueError:
+                    sg.popup('VALOR DA COMISSÃO INVÁLIDO', title='ERRO')
                 else:
-                    if sys.setInfo(id, name, None, paymethod, syndicate, taxa, type, adress, agenda):
-                        sg.popup('Alterações Salvas', title = 'Confirmação')
-                        Menu.printData(id)
-                    else: sg.popup('Não foi possível salvar as alterações', title='ERRO')
-                    break
+                    if values['taxa'] != '':
+                        try:
+                            taxa = float(values['taxa'])
+                        except ValueError:
+                            sg.popup('VALOR DA TAXA SINDICAL INVÁLIDO', title='ERRO')
+                        else:
+                            new_employee = Person(name, employee.cpf).create_employee(emplo_class, employee.salary, paymethod, comissao)
+                            new_employee.set_syndicate(syndicate, employee.cpf, taxa)
+                            new_employee.adress.set_all(*adress)
+                            manager.update_employee(employee.cpf, new_employee)
+                            sg.popup('Alterações Salvas', title = 'Confirmação')
+                            break
 
         window.close(); del window

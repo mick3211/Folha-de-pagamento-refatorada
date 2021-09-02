@@ -130,7 +130,7 @@ class NoSyndicate(AbstractSyndicate):
         pass
 
     def set_default_taxe(self, value: float):
-        self.default_taxe = None
+        self.default_taxe = 0
 
     def clear_his():
         pass
