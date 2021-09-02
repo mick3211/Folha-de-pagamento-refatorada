@@ -41,16 +41,16 @@ class Menu():
                 adress = (values['cep'], values['rua'], values['numero'], values['bairro'], values['cidade'], values['estado'])
 
                 try: emplo_class = TYPES[values['type']]
-                except TypeError: sg.popup('TIPO INVÁLIDO', title='ERRO')
+                except KeyError: sg.popup('TIPO INVÁLIDO', title='ERRO')
                 else:
                     try: taxa = float(values['taxa']) if values['syndicate'] else None
-                    except TypeError: sg.popup('VALOR DA TAXA SINDICAL INVÁLIDO', title='ERRO')
+                    except ValueError: sg.popup('VALOR DA TAXA SINDICAL INVÁLIDO', title='ERRO')
                     else:
                         try: salary = float(values['salary'])
-                        except TypeError: sg.popup('VALOR DO SALÁRIO INVÁLIDO')
+                        except ValueError: sg.popup('VALOR DO SALÁRIO INVÁLIDO')
                         else:
                             try: comissao = float(values['comissao'])/100 if values['type'] == 'Comissionado' else None
-                            except TypeError: sg.popup('VALOR DA COMISSÃO INVÁLIDO')
+                            except ValueError: sg.popup('VALOR DA COMISSÃO INVÁLIDO')
                             else:
                                 if cpf == '' or cpf in Manager._employee_list.keys(): sg.popup('CPF JÁ CADASTRADO!', title='ERRO')
                                 elif name == '': sg.popup('INSIRA UM NOME VÁLIDO', title='ERRO')
