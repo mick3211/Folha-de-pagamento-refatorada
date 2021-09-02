@@ -11,7 +11,7 @@ class Person():
         try:
             return eval(emplo_class)(salary, paymethod, comissao, self)
         except TypeError:
-            return emplo_class(salary, paymethod, self)
+            return emplo_class(salary, paymethod, comissao, self)
 
 
 class Adress():
@@ -77,7 +77,7 @@ class AbstractEmployee(metaclass = ABCMeta):
 
     def __str__(self):
         return (f'//{type(self).__name__}, salário:{self.salary}, paymethod:{self.paymethod}, '
-        f'syndicate:{type(self.syndicate).__name__}, name:{self.name}, cpf:{self.cpf}'
+        f'syndicate:{type(self.syndicate).__name__}, name:{self.name}, cpf:{self.cpf} '
         f'endereço: {self.adress.__str__()}, sindicato:{self.syndicate.__str__()}')
 
     def set_syndicate(self, syndicate, id=None, value=None):
@@ -85,6 +85,9 @@ class AbstractEmployee(metaclass = ABCMeta):
 
     def remove_syndicate(self):
         self.syndicate = NoSyndicate()
+
+    def get_attr():
+        pass
 
     @abstractmethod
     def set_comissao(self, value):
@@ -176,3 +179,5 @@ class Commisioned(AbstractEmployee):
 
     def reg(self):
         print('Limpando histórico do comissionado')
+
+#p = Person('Mickael', '123').create_employee(Hourly, 4500, "Deposito")

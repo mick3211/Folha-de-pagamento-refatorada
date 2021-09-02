@@ -1,5 +1,7 @@
 import PySimpleGUI as sg
 from layouts.add_employee import add_employee_layout
+from layouts.edit_employee import edit_employee_layout
+from layouts.select_employee import select_employee_layout
 from classes.person import Person
 from classes.manage import Manager
 
@@ -8,6 +10,29 @@ TYPES = {'Assalariado': 'Salaried', 'Comissionado': 'Commisioned', 'Horista': 'H
 
 
 class Menu():
+
+    def select_employee():
+
+        employee_list = Manager()._employee_list
+
+        if len(employee_list) == 0:
+            sg.popup('SEM FUNCIONÁRIOS CADASTRADOS!', title='ERRO')
+            return False
+
+        else:
+            window = sg.Window('Selecionar empregado', select_employee_layout(employee_list))
+
+            while True:
+                event, values = window.read()
+
+                if event == sg.WIN_CLOSED or event == "Voltar":
+                    window.close(); del window
+                    return False
+                if event == 'Selecionar':
+                    window.close(); del window
+                    if values['selected_employee'] in employee_list.keys():
+                        return employee_list[values['selected_employee']]
+                    else: sg.popup('FUNCIONÁRIO INVÁLIDO!', title='ERRO')
 
     def add_employee():
         window = sg.Window('Adicionar empregado', add_employee_layout())
@@ -57,9 +82,60 @@ class Menu():
                                 else:
                                     employee = Person(name, cpf).create_employee(emplo_class, salary, paymethod, comissao)
                                     employee.set_syndicate(syndicate, cpf, taxa)
+                                    employee.set_comissao(comissao)
                                     employee.adress.set_all(*adress)
                                     Manager.add_employee(cpf, employee)
                                     sg.popup('Empregado adicionado')
                                     break
+
+        window.close(); del window
+
+    def edit_employee(employee):
+
+        manager = Manager()
+        window = sg.Window('Editar empregado', edit_employee_layout(employee), enable_close_attempted_event=True)
+
+        while True:
+            event, values = window.read()
+            
+            if (event == sg.WINDOW_CLOSE_ATTEMPTED_EVENT or event == 'Voltar') and sg.popup_yes_no('Sair sem salvar?') == 'Yes':
+                break
+
+            if event == 'EXCLUIR EMPREGADO' and sg.popup_yes_no('Tem certeza que quer deletar o funcionário?') == 'Yes':
+                if manager.del_employee(employee.cpf):
+                    sg.popup('Funcionário removido')
+                    break
+                else: sg.popup('Não foi possível remover o funionário')
+
+            if event == 'syndicate':
+                window['syn_text'].update(visible=True)
+                window['taxa'].update(visible=True)
+
+            if event == 'not_syndicate':
+                window['syn_text'].update(visible=False)
+                window['taxa'].update(visible=False)
+
+            if event == 'Salvar':
+                name = values['name']
+                type = TYPES[values['type']]
+                paymethod = PAYMETHODS[values['paymethod']]
+                syndicate = NotSyndicate if not values['syndicate'] else Syndicate
+                adress = (values['cep'], values['numero'], values['rua'], values['bairro'], values['cidade'], values['estado'])
+
+                if values['agenda'] == 'Não alterar': agenda = None
+                else:
+                    agenda = values['agenda'].split('.')
+                    agenda = int(agenda[0])
+
+                try:
+                    taxa = float(values['taxa'])
+                except:
+                    sg.popup('VALOR DA TAXA SINDICAL INVÁLIDO', title='ERRO')
+                else:
+                    if sys.setInfo(id, name, None, paymethod, syndicate, taxa, type, adress, agenda):
+                        sg.popup('Alterações Salvas', title = 'Confirmação')
+                        Menu.printData(id)
+                    else: sg.popup('Não foi possível salvar as alterações', title='ERRO')
+                    break
 
         window.close(); del window

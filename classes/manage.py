@@ -73,9 +73,15 @@ class Manager():
         cls._employee_list.update({id: employee})
         cls._state.stack('AddEmployeeState', id)
         
-        print('Empregado adicionado', cls._employee_list, employee.__str__())
+        print('Empregado adicionado', cls._employee_list, employee)
 
     @classmethod
     def del_employee(cls, id):
-        employee = cls._employee_list.pop(id)
+        try:
+            employee = cls._employee_list.pop(id)
+        except IndexError:
+            return False
         cls._state.stack('RemoveEmployeeState', employee)
+
+        print ('Empregado removido', employee.name)
+        return True

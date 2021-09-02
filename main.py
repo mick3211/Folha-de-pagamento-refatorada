@@ -13,9 +13,9 @@ while True:
     #if event == 'Undo/redo': Menu.undo()
     #if event == 'agenda': Menu.add_agenda()
     #if event == 'pay': Menu.pay_schedule()
-    #if event == 'Editar empregado':
-    #    select = Menu.select_employee()
-    #    if select != False: Menu.edit_employee(select)
+    if event == 'Editar empregado':
+        select = Menu.select_employee()
+        if select != False: Menu.edit_employee(select)
     #if event == 'Registrar informações':
     #    select = Menu.select_employee()
     #    if select != False: Menu.reg_info(select)
