@@ -18,7 +18,10 @@ def edit_employee_layout(employee):
         ], key='personal_info')],
         [sg.Frame('Definições do empregado', [
             [sg.Text('Tipo:')],
-            [sg.Combo(['Horista', 'Assalariado', 'Comissionado'], key='type', default_value=TYPES[type(employee).__name__])],
+            [sg.Combo(['Horista', 'Assalariado', 'Comissionado'], key='type', default_value=TYPES[type(employee).__name__], enable_events=True)],
+            [sg.Frame('',[
+                [sg.Text('Porcentagem da comissão:', key='t1'), sg.Input(size=(3,1), key='comissao')]
+            ], key='com', visible=False)],
             [sg.Text('Método de pagamento:')],
             [sg.Combo(['Cheque pelos Correios', 'Cheque em mãos', 'Depósito bancário'], key='paymethod', default_value=info_list['paymethod'])],
             [sg.Text('Agenda de pagamento (aplicado após o próximo pagamento)')],

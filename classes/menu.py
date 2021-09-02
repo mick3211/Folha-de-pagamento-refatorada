@@ -107,13 +107,17 @@ class Menu():
                     break
                 else: sg.popup('Não foi possível remover o funionário')
 
-            if event == 'syndicate':
+            if values['syndicate']:
                 window['syn_text'].update(visible=True)
                 window['taxa'].update(visible=True)
-
-            if event == 'not_syndicate':
+            else:
                 window['syn_text'].update(visible=False)
                 window['taxa'].update(visible=False)
+
+            if values['type'] == 'Comissionado':
+                window['com'].update(visible=True)
+            else:
+                window['com'].update(visible=False)
 
             if event == 'Salvar':
                 name = values['name']
