@@ -39,6 +39,28 @@ class UpdateEmployeeState(AbstractState):
         return UpdateEmployeeState(employee)
 
 
+class InsertHisState(AbstractState):
+
+    def __init__(self, his:list):
+        self.his = his
+
+    def execute(self):
+        print('Ultima entrada do historico desfeita', self.his)
+        return PopHisState(self.his, self.his.pop())
+
+
+class PopHisState(AbstractState):
+
+    def __init__(self, his:list, item):
+        self.his = his
+        self.item = item
+
+    def execute(self):
+        print('Ultima entrada do historico Refeita', self.his)
+        self.his.append(self.item)
+        return InsertHisState(self.his)
+        
+
 class State():
 
     def __init__(self):
@@ -112,3 +134,9 @@ class Manager():
         cls._employee_list.update({id: updt_employee})
 
         print('--empregado editado--', cls._employee_list, cls._employee_list[id])
+
+    @classmethod
+    def insert_his(cls, employee, value=None):
+        employee.insert_his(value)
+        cls._state.stack('InsertHisState', (employee.his))
+        print('--Valor registrado', employee.his)

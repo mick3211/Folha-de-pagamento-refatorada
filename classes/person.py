@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+import time
 from classes.syndicate import new_syndicate
 from classes.adress import Adress
 from classes.hist import SalesHis, ClockHis
@@ -53,7 +54,7 @@ class AbstractEmployee(metaclass = ABCMeta):
         pass
 
     @abstractmethod
-    def reg():
+    def insert_his():
         pass
 
 
@@ -72,8 +73,8 @@ class Hourly(AbstractEmployee):
     def clear_his(self):
         print('Limpando historico do horista')
     
-    def reg(self):
-        print('Registrando ponto')
+    def insert_his(self, value=None):
+        self.his.punch(time.time())
         
 
 class Salaried(AbstractEmployee):
@@ -87,7 +88,7 @@ class Salaried(AbstractEmployee):
     def clear_his(self):
         print('Limpando histórico do assalariado')
 
-    def reg(self):
+    def insert_his(self, value=None):
         print('Assalariado não possui historico')
 
 
@@ -106,8 +107,8 @@ class Commisioned(AbstractEmployee):
     def clear_his(self):
         print('Limpando histórico do comissionado')
 
-    def reg(self):
-        print('Adicionando venda')
+    def insert_his(self, value):
+        self.his.new_sale(time.time(), value)
 
 #p = Person('Mickael', '123').create_employee(Hourly, 4500, "Deposito")
 #p2 = Person('José', '123').create_employee(Commisioned, 4500, "Deposito")

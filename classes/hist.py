@@ -3,6 +3,9 @@ class His():
     def __init__(self):
         self._values = []
 
+    def __str__(self):
+        return f'Histórico: {self._values}'
+
     def clear(self):
         self._values.clear()
 

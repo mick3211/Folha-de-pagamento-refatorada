@@ -28,7 +28,8 @@ def reg_info_layout(employee):
 
     if layout == []:
         layout.append(
-                [sg.Text('Não há informações a serem registradas para o funcionário selecionado')],
-                [sg.Button('Voltar')]
+                [sg.Text('Não há informações a serem registradas para o funcionário selecionado')]
             )
+
+    layout.append([sg.Button('Voltar')])
     return layout
