@@ -2,6 +2,7 @@ import PySimpleGUI as sg
 from layouts.add_employee import add_employee_layout
 from layouts.edit_employee import edit_employee_layout
 from layouts.select_employee import select_employee_layout
+from layouts.reg_info import reg_info_layout
 from classes.person import Person
 from classes.manage import Manager
 
@@ -156,3 +157,39 @@ class Menu():
 
     def redo():
         Manager.redo()
+
+    def reg_info(employee):
+
+        window = sg.Window('Registrar informações', layout=reg_info_layout(employee), use_default_focus=False)
+
+        while True:
+            event, values = window.read()
+            if event == sg.WINDOW_CLOSED or event == 'Voltar': break
+
+            if event == 'ponto':
+                if sys.regPonto(id, time.time()):
+                    sg.popup('Ponto registrado')
+                else: sg.popup('Não foi possível registrar o ponto', title='ERRO')
+                break
+
+            if event == 'venda':
+                try:
+                    sale= float(values['sale_value'])
+                except:
+                    sg.popup('VALOR DA VENDA INVÁLIDO', title='ERRO')
+                else:
+                    if sys.regSale(id, sale, time.asctime()):
+                        sg.popup(f'Venda no valor de R${sale} registrada', title='Venda registrada')
+                    else: sg.popup('Não foi possível registrar a venda', title='ERRO')
+
+            if event == 'Lançar':
+                try:
+                    serv_taxe = float(values['serv_taxe'])
+                except:
+                    sg.popup('VALOR DA TAXA INVÁLIDO', title='ERRO')
+                else:
+                    if sys.regTaxa(id, serv_taxe):
+                        sg.popup(f'Taxa de serviço no valor de R${serv_taxe} registrada', title='Taxa registrada')
+                    else: sg.popup('Não foi possível registrar a taxa de serviço', title='ERRO')
+
+        window.close(); del window

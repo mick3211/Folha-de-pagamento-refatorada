@@ -23,9 +23,14 @@ class ClockHis(His):
         super().__init__()
         self.__time_set = []
 
+    def isin(self):
+        if len(self.__time_set) > 1:
+            return True
+        return False
+
     def punch(self, time):
         self.__time_set.append(time)
 
-        if len(self.__time_set) > 1:
+        if self.isin():
             self._values.append(self.__time_set)
             self.__time_set.clear()

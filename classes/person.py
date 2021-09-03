@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
-from syndicate import new_syndicate
-from adress import Adress
-from hist import SalesHis, ClockHis
+from classes.syndicate import new_syndicate
+from classes.adress import Adress
+from classes.hist import SalesHis, ClockHis
 
 
 class Person():
