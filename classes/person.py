@@ -1,5 +1,7 @@
 from abc import ABCMeta, abstractmethod
-from syndicate import NoSyndicate, Syndicate
+from syndicate import new_syndicate
+from adress import Adress
+from hist import SalesHis, ClockHis
 
 
 class Person():
@@ -15,51 +17,25 @@ class Person():
             return emplo_class(salary, paymethod, comissao, self)
 
 
-class Adress():
-
-    def __init__(self, cep='', rua='', num='', bairro='', cidade='', estado=''):
-        self.cep = cep
-        self.rua = rua
-        self.num = num
-        self.bairro = bairro
-        self.cidade = cidade
-        self.estado = estado
-
-    def __str__(self):
-        return (f'cep: {self.cep}, rua:{self.rua}, num:{self.num}, '
-        f'bairro:{self.bairro}, cidade:{self.cidade}, estado:{self.estado}')
-
-    def set_all(self, cep, rua, num, bairro, cidade, estado):
-        self.cep = cep
-        self.rua = rua
-        self.num = num
-        self.bairro = bairro
-        self.cidade = cidade
-        self.estado = estado
-
-
 class AbstractEmployee(metaclass = ABCMeta):
 
     def __init__(self, salary, paymethod, comissao, person: Person):
         self.salary = salary
         self.paymethod = paymethod
-        self.syndicate = NoSyndicate()
         self.adress = Adress()
         self.name = person.name
         self.cpf = person.cpf
-        self.set_comissao(comissao)
         self.his = None
+        self.set_syndicate('NoSyndicate')
+        self.set_comissao(comissao)
 
     def __str__(self):
         return (f'//{type(self).__name__}, salário:{self.salary}, paymethod:{self.paymethod}, '
         f'syndicate:{type(self.syndicate).__name__}, name:{self.name}, cpf:{self.cpf} '
-        f'endereço: {self.adress.__str__()}, sindicato:{self.syndicate.__str__()}')
+        f'endereço: {self.adress}, sindicato:{self.syndicate}')
 
-    def set_syndicate(self, syndicate, id=None, value=None):
-        self.syndicate = eval(syndicate)(id, value)
-
-    def remove_syndicate(self):
-        self.syndicate = NoSyndicate()
+    def set_syndicate(self, syndicate, id=None, value=0):
+        self.syndicate = new_syndicate(syndicate, id, value)
 
     def get_attr():
         pass
@@ -85,7 +61,7 @@ class Hourly(AbstractEmployee):
 
     def __init__(self, salary, paymethod, comissao, person: Person):
         super().__init__(salary, paymethod, comissao, person)
-        self.his = {}
+        self.his = ClockHis()
 
     def set_comissao(self, value):
         return super().set_comissao(value)
@@ -119,7 +95,7 @@ class Commisioned(AbstractEmployee):
 
     def __init__(self, salary, paymethod, comissao, person: Person):
         super().__init__(salary, paymethod, comissao, person)
-        self.his = {}
+        self.his = SalesHis()
 
     def set_comissao(self, value):
         self.comissao = value

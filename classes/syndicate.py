@@ -56,3 +56,6 @@ class NoSyndicate(AbstractSyndicate):
 
     def clear_his():
         pass
+
+def new_syndicate(syndicate, id=None, value=0):
+    return eval(syndicate)(id, value)
