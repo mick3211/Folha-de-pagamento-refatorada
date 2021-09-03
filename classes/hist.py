@@ -12,11 +12,13 @@ class His():
     def pop(self):
         return self._values.pop()
 
+    def append(self, value):
+        self._values.append(value)
+
 
 class SalesHis(His):
 
     def new_sale(self, time, value):
-        print(f'Nova venda registrada no valor de {value}')
         self._values.append({time: value})
 
 
@@ -27,13 +29,13 @@ class ClockHis(His):
         self.__time_set = []
 
     def isin(self):
-        if len(self.__time_set) > 1:
+        if len(self.__time_set) >= 1:
             return True
         return False
 
     def punch(self, time):
         self.__time_set.append(time)
 
-        if self.isin():
-            self._values.append(self.__time_set)
+        if len(self.__time_set) > 1:
+            self._values.append(self.__time_set[:])
             self.__time_set.clear()

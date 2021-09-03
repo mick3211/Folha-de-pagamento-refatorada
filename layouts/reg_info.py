@@ -15,7 +15,7 @@ def reg_info_layout(employee):
     if type(employee).__name__ == 'Hourly':
          layout.append(
             [sg.Frame('Registrar ponto', [
-                [sg.Button('Registrar entrada' if employee.his.isin() else 'Registrar saída', key='ponto')]
+                [sg.Button('Registrar saída' if employee.his.isin() else 'Registrar entrada', key='ponto')]
             ])]
         )
 

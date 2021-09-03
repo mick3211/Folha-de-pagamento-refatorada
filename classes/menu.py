@@ -161,26 +161,25 @@ class Menu():
     def reg_info(employee):
 
         window = sg.Window('Registrar informações', layout=reg_info_layout(employee), use_default_focus=False)
+        manager = Manager()
 
         while True:
             event, values = window.read()
             if event == sg.WINDOW_CLOSED or event == 'Voltar': break
 
             if event == 'ponto':
-                if sys.regPonto(id, time.time()):
-                    sg.popup('Ponto registrado')
-                else: sg.popup('Não foi possível registrar o ponto', title='ERRO')
+                manager.insert_his(employee)
+                sg.popup('Ponto registrado', title='Ponto')
                 break
 
             if event == 'venda':
                 try:
-                    sale= float(values['sale_value'])
+                    sale = float(values['sale_value'])
                 except:
                     sg.popup('VALOR DA VENDA INVÁLIDO', title='ERRO')
                 else:
-                    if sys.regSale(id, sale, time.asctime()):
-                        sg.popup(f'Venda no valor de R${sale} registrada', title='Venda registrada')
-                    else: sg.popup('Não foi possível registrar a venda', title='ERRO')
+                    manager.insert_his(employee, sale)
+                    sg.popup(f'Venda no valor de R${sale} registrada', title='Venda registrada')
 
             if event == 'Lançar':
                 try:
@@ -188,8 +187,7 @@ class Menu():
                 except:
                     sg.popup('VALOR DA TAXA INVÁLIDO', title='ERRO')
                 else:
-                    if sys.regTaxa(id, serv_taxe):
-                        sg.popup(f'Taxa de serviço no valor de R${serv_taxe} registrada', title='Taxa registrada')
-                    else: sg.popup('Não foi possível registrar a taxa de serviço', title='ERRO')
+                    manager.insert_service_taxe(employee, serv_taxe)
+                    sg.popup(f'Taxa de serviço no valor de R${serv_taxe} registrada', title='Taxa registrada')
 
         window.close(); del window

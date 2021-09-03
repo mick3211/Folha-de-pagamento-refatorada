@@ -1,92 +1,5 @@
 from abc import ABCMeta, abstractmethod
-
-
-class AbstractState(metaclass = ABCMeta):
-
-    @abstractmethod
-    def execute():
-        pass
-
-class AddEmployeeState(AbstractState):
-
-    def __init__(self, id):
-        self.id = id
-
-    def execute(self):
-        print('Empregado Removido')
-        return RemoveEmployeeState(Manager._employee_list.pop(self.id))
-
-
-class RemoveEmployeeState(AbstractState):
-
-    def __init__(self, employee):
-        self.employee = employee
-
-    def execute(self):
-        Manager._employee_list.update({self.employee.cpf: self.employee})
-        print('Empregado Readicionado')
-        return AddEmployeeState(self.employee.cpf)
-
-class UpdateEmployeeState(AbstractState):
-
-    def __init__(self, employee):
-        self.employee = employee
-
-    def execute(self):
-        employee = Manager._employee_list.pop(self.employee.cpf)
-        Manager._employee_list.update({self.employee.cpf: self.employee})
-        print('Informações restauradas')
-        return UpdateEmployeeState(employee)
-
-
-class InsertHisState(AbstractState):
-
-    def __init__(self, his:list):
-        self.his = his
-
-    def execute(self):
-        print('Ultima entrada do historico desfeita', self.his)
-        return PopHisState(self.his, self.his.pop())
-
-
-class PopHisState(AbstractState):
-
-    def __init__(self, his:list, item):
-        self.his = his
-        self.item = item
-
-    def execute(self):
-        print('Ultima entrada do historico Refeita', self.his)
-        self.his.append(self.item)
-        return InsertHisState(self.his)
-        
-
-class State():
-
-    def __init__(self):
-        self._undo_stack = []
-        self._redo_stack = []
-
-    # Empilha uma ação na pilha undo e limpa a redo
-    def stack(self, state, arg):
-
-        self._undo_stack.append(eval(state)(arg))
-        self._redo_stack.clear()
-        return self._undo_stack[-1]
-
-    def undo(self):
-        try:
-            act = self._undo_stack.pop()
-        except IndexError: return
-        
-        self._redo_stack.append(act.execute())
-
-    def redo(self):
-        try:
-            act = self._redo_stack.pop()
-        except IndexError: return
-
-        self._undo_stack.append(act.execute())
+from classes.states import State
 
 
 class Manager():
@@ -112,7 +25,7 @@ class Manager():
     @classmethod
     def add_employee(cls, id, employee):
         cls._employee_list.update({id: employee})
-        cls._state.stack('AddEmployeeState', id)
+        cls._state.stack('AddEmployeeState', id, cls)
         
         print('--Empregado adicionado--', cls._employee_list, cls._employee_list[id])
 
@@ -122,7 +35,7 @@ class Manager():
             employee = cls._employee_list.pop(id)
         except IndexError:
             return False
-        cls._state.stack('RemoveEmployeeState', employee)
+        cls._state.stack('RemoveEmployeeState', employee, cls)
 
         print ('--Empregado removido--', employee)
         return True
@@ -130,7 +43,7 @@ class Manager():
     @classmethod
     def update_employee(cls, id, updt_employee):
         employee = cls._employee_list.get(id)
-        cls._state.stack('UpdateEmployeeState', employee)
+        cls._state.stack('UpdateEmployeeState', employee, cls)
         cls._employee_list.update({id: updt_employee})
 
         print('--empregado editado--', cls._employee_list, cls._employee_list[id])
@@ -138,5 +51,14 @@ class Manager():
     @classmethod
     def insert_his(cls, employee, value=None):
         employee.insert_his(value)
-        cls._state.stack('InsertHisState', (employee.his))
-        print('--Valor registrado', employee.his)
+
+        if len(employee.his._values) > 0:
+            cls._state.stack('InsertHisState', (employee.his))
+            print('--Valor registrado--', employee.his)
+
+    @classmethod
+    def insert_service_taxe(cls, employee, value):
+        employee.syndicate.insert_taxe(value)
+        cls._state.stack('InsertHisState', (employee.syndicate.taxe_his))
+
+        print('--Valor registrado--', employee.syndicate)

@@ -17,7 +17,7 @@ while True:
     if event == 'Editar empregado':
         select = Menu.select_employee()
         if select != False: Menu.edit_employee(select)
-    if event == 'Lançar venda / ponto':
+    if event == 'Lançar ponto / taxa / venda':
         select = Menu.select_employee()
         if select != False: Menu.reg_info(select)
 
