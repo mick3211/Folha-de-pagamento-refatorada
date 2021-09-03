@@ -150,3 +150,9 @@ class Menu():
                             break
 
         window.close(); del window
+
+    def undo():
+        Manager.undo()
+
+    def redo():
+        Manager.redo()

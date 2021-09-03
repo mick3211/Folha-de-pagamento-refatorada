@@ -41,31 +41,30 @@ class UpdateEmployeeState(AbstractState):
 
 class State():
 
-    _undo_stack = []
-    _redo_stack = []
+    def __init__(self):
+        self._undo_stack = []
+        self._redo_stack = []
 
-    @classmethod  # Empilha uma ação na pilha undo e limpa a redo
-    def stack(cls, state, arg):
+    # Empilha uma ação na pilha undo e limpa a redo
+    def stack(self, state, arg):
 
-        cls._undo_stack.append(eval(state)(arg))
-        cls._redo_stack.clear()
-        return cls._undo_stack[-1]
+        self._undo_stack.append(eval(state)(arg))
+        self._redo_stack.clear()
+        return self._undo_stack[-1]
 
-    @classmethod
-    def undo(cls):
+    def undo(self):
         try:
-            act = cls._undo_stack.pop()
+            act = self._undo_stack.pop()
         except IndexError: return
         
-        cls._redo_stack.append(act.execute())
+        self._redo_stack.append(act.execute())
 
-    @classmethod
-    def redo(cls):
+    def redo(self):
         try:
-            act = cls._redo_stack.pop()
+            act = self._redo_stack.pop()
         except IndexError: return
 
-        cls._undo_stack.append(act.execute())
+        self._undo_stack.append(act.execute())
 
 
 class Manager():
@@ -74,10 +73,19 @@ class Manager():
     _state = State()
     _employee_list = {}
 
-    def __new__(cls):  # Garante que apenas uma instância da classe será criada
+    # Garante que apenas uma instância da classe será criada
+    def __new__(cls):
         if not cls.__instance:
             cls.__instance = super().__new__(cls)
         return cls.__instance
+
+    @classmethod
+    def undo(cls):
+        cls._state.undo()
+
+    @classmethod
+    def redo(cls):
+        cls._state.redo()
 
     @classmethod
     def add_employee(cls, id, employee):
@@ -98,8 +106,9 @@ class Manager():
         return True
 
     @classmethod
-    def update_employee(cls, id, employee):
-        cls._state.stack('UpdateEmployeeState',employee)
-        cls._employee_list.update({id: employee})
+    def update_employee(cls, id, updt_employee):
+        employee = cls._employee_list.get(id)
+        cls._state.stack('UpdateEmployeeState', employee)
+        cls._employee_list.update({id: updt_employee})
 
         print('--empregado editado--', cls._employee_list, cls._employee_list[id])

@@ -10,7 +10,8 @@ while True:
 
     if event == sg.WIN_CLOSED or event == "Sair": break
     if event == 'Adicionar empregado': Menu.add_employee()
-    #if event == 'Undo/redo': Menu.undo()
+    if event == 'Desfazer': Menu.undo()
+    if event == 'Refazer': Menu.redo()
     #if event == 'agenda': Menu.add_agenda()
     #if event == 'pay': Menu.pay_schedule()
     if event == 'Editar empregado':
