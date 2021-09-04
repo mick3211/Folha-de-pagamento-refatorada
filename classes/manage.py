@@ -7,6 +7,7 @@ class Manager():
     __instance = None
     _state = State()
     _employee_list = {}
+    _agendas = [[30, None], [14, 4], [7, 4]]
 
     # Garante que apenas uma instância da classe será criada
     def __new__(cls):

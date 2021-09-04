@@ -1,8 +1,9 @@
 from abc import ABCMeta, abstractmethod
-import time
+from datetime import time
 from classes.syndicate import new_syndicate
 from classes.adress import Adress
 from classes.hist import SalesHis, ClockHis
+from classes.agenda import create_agenda
 
 
 class Person():
@@ -13,9 +14,9 @@ class Person():
 
     def create_employee(self, emplo_class, salary, paymethod, comissao=None):
         try:
-            return eval(emplo_class)(salary, paymethod, comissao, self)
-        except TypeError:
             return emplo_class(salary, paymethod, comissao, self)
+        except TypeError:
+            return eval(emplo_class)(salary, paymethod, comissao, self)
 
 
 class AbstractEmployee(metaclass = ABCMeta):
@@ -32,14 +33,14 @@ class AbstractEmployee(metaclass = ABCMeta):
 
     def __str__(self):
         return (f'//{type(self).__name__}, salário:{self.salary}, paymethod:{self.paymethod}, '
-        f'syndicate:{type(self.syndicate).__name__}, name:{self.name}, cpf:{self.cpf} '
-        f'endereço: {self.adress}, sindicato:{self.syndicate}')
+        f'syndicate:{type(self.syndicate).__name__}, name:{self.name}, cpf:{self.cpf}, '
+        f'endereço: {self.adress}, sindicato:{self.syndicate}, agenda:{self.agenda}')
 
     def set_syndicate(self, syndicate, id=None, value=0):
         self.syndicate = new_syndicate(syndicate, id, value)
-
-    def get_attr():
-        pass
+        
+    def set_agenda(self, type, *args):
+        self.agenda = create_agenda(type, *args)
 
     @abstractmethod
     def set_comissao(self, value):
@@ -61,6 +62,7 @@ class AbstractEmployee(metaclass = ABCMeta):
 class Hourly(AbstractEmployee):
 
     def __init__(self, salary, paymethod, comissao, person: Person):
+        self.set_agenda('Semanal', 1, 4)
         super().__init__(salary, paymethod, comissao, person)
         self.his = ClockHis()
 
@@ -79,6 +81,10 @@ class Hourly(AbstractEmployee):
 
 class Salaried(AbstractEmployee):
 
+    def __init__(self, salary, paymethod, comissao, person: Person):
+        self.set_agenda('Mensal', 30)
+        super().__init__(salary, paymethod, comissao, person)
+
     def set_comissao(self, value):
         return super().set_comissao(value)
 
@@ -95,6 +101,7 @@ class Salaried(AbstractEmployee):
 class Commisioned(AbstractEmployee):
 
     def __init__(self, salary, paymethod, comissao, person: Person):
+        self.set_agenda('Semanal', 2, 4)
         super().__init__(salary, paymethod, comissao, person)
         self.his = SalesHis()
 
