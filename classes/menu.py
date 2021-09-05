@@ -10,6 +10,7 @@ from classes.agenda import create_agenda
 
 
 TYPES = {'Assalariado': 'Salaried', 'Comissionado': 'Commisioned', 'Horista': 'Hourly'}
+DAYS = {'segunda': 0, 'terça': 1, 'quarta': 2, 'quinta': 3, 'sexta': 4, 'sábado': 5, 'domingo': 6}
 
 
 class Menu():
@@ -144,7 +145,7 @@ class Menu():
                                 agenda = values['agenda'].split('.')
                                 agenda = int(agenda[0])
                                 new_employee.set_agenda(manager._agendas[agenda])
-                                
+
                             manager.update_employee(employee.cpf, new_employee)
                             sg.popup('Alterações Salvas', title = 'Confirmação')
                             break
@@ -211,11 +212,30 @@ class Menu():
                 if name not in ['Semanal', 'Mensal']:
                     sg.popup('TIPO DE AGENDA INVÁLIDO', title='ERRO')
                 else:
-                    try:
-                        args = list(map(int, args))
-                    except TypeError:
-                        sg.popup('VALORES DA AGENDA INVÁLIDOS', title='ERRO')
+                    if name == 'Mensal':
+                        if len(args) != 1:
+                            sg.popup('INSIRA O DIA DO MÊS', title='ERRO')
+                        else:
+                            try:
+                                args[0] = int(args[0])
+                                if args[0] > 30 or args[0] < 1: raise ValueError
+                            except ValueError:
+                                sg.popup('DIA DO MÊS INVÁLIDO', title='ERRO')
+                            else:
+                                manager.add_agenda(create_agenda(name, *args))
                     else:
-                        manager.add_agenda(create_agenda(name, *args))
+                        if len(args) != 2:
+                            sg.popup('INSIRA A FREQUÊNCIA E O DIA DA SEMANA', title='ERRO')
+                        else:
+                            try:
+                                args[0] = int(args[0])
+                            except ValueError:
+                                sg.popup('FREQUÊNCIA INVÁLIDA', title='ERRO')
+                            else:
+                                if args[1].lower() not in DAYS.keys():
+                                    sg.popup('DIA DA SEMANA INVÁLIDO', title='ERRO')                       
+                                else:
+                                    args[1] = DAYS[args[1]]
+                                    manager.add_agenda(create_agenda(name, *args))
 
         window.close(); del window
