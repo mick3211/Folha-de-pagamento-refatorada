@@ -45,13 +45,21 @@ class AbstractEmployee(metaclass = ABCMeta):
 
     def update_agenda(self):
         self.agenda = self.new_agenda[:]
+        print('Agenda atualizada', self.agenda)
+
+    def clear_his(self):
+        self.his.clear()
+
+    def pay(self):
+        payment = self.accumulated_payment()
+        self.clear_his()
+        self.update_agenda()
+        self.agenda.set_payday()
+
+        return payment
 
     @abstractmethod
     def set_comissao(self, value):
-        pass
-
-    @abstractmethod
-    def clear_his():
         pass
 
     @abstractmethod
@@ -72,9 +80,6 @@ class Hourly(AbstractEmployee):
 
     def set_comissao(self, value):
         return super().set_comissao(value)
-
-    def clear_his(self):
-        print('Limpando historico do horista')
     
     def insert_his(self, value=None):
         self.his.punch(time.time())
@@ -107,8 +112,8 @@ class Salaried(AbstractEmployee):
     def set_comissao(self, value):
         return super().set_comissao(value)
 
-    def clear_his(self):
-        print('Limpando histórico do assalariado')
+    def clear_his():
+        pass
 
     def insert_his(self, value=None):
         print('Assalariado não possui historico')
@@ -128,9 +133,6 @@ class Commisioned(AbstractEmployee):
 
     def set_comissao(self, value):
         self.comissao = value
-
-    def clear_his(self):
-        print('Limpando histórico do comissionado')
 
     def insert_his(self, value):
         self.his.new_sale(time.time(), value)
