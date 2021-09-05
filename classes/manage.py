@@ -69,3 +69,13 @@ class Manager():
     def add_agenda(cls, agenda):
         cls._agendas.append(agenda)
         print('--Agenda adicionada--', cls._agendas[-1])
+
+    @classmethod
+    def pending_pays(cls, time):
+
+        pending = list()
+
+        for emplo in cls._employee_list:
+            if emplo.agenda.payday == time:
+                pending.append(emplo)
+        return pending
