@@ -73,15 +73,30 @@ class Hourly(AbstractEmployee):
     def set_comissao(self, value):
         return super().set_comissao(value)
 
-    def accumulated_payment(self):
-        print('Pagamento acumulado de horista')
-
     def clear_his(self):
         print('Limpando historico do horista')
     
     def insert_his(self, value=None):
         self.his.punch(time.time())
         
+    def accumulated_payment(self):
+
+        syn_total = self.syndicate.get_total()
+        total_h = 0
+        total_extra = 0
+
+        for each in self.his._values:
+            sec = (each[1] - each[0])
+
+            if sec > 28800:
+                total_extra += (sec - 28800)
+                total_h += 28800
+            else: total_h += sec
+
+        total_h /= 3600
+        total_extra /= 3600
+
+        return (self.salary*total_h + self.salary*total_extra*1.5) - syn_total
 
 class Salaried(AbstractEmployee):
 
@@ -92,14 +107,16 @@ class Salaried(AbstractEmployee):
     def set_comissao(self, value):
         return super().set_comissao(value)
 
-    def accumulated_payment(self):
-        print('Salário acumulado do assalariado')
-
     def clear_his(self):
         print('Limpando histórico do assalariado')
 
     def insert_his(self, value=None):
         print('Assalariado não possui historico')
+
+    def accumulated_payment(self):
+        syn_total = self.syndicate.get_total()
+        salary = self.salary/4
+        return salary*self.agenda.work_weeks() - syn_total
 
 
 class Commisioned(AbstractEmployee):
@@ -112,11 +129,13 @@ class Commisioned(AbstractEmployee):
     def set_comissao(self, value):
         self.comissao = value
 
-    def accumulated_payment(self):
-        print('Salário acumulado do comissionado')
-
     def clear_his(self):
         print('Limpando histórico do comissionado')
 
     def insert_his(self, value):
         self.his.new_sale(time.time(), value)
+
+    def accumulated_payment(self):
+        syn_total = self.syndicate.get_total()
+        salary = self.salary/2
+        return salary*self.agenda.work_weeks() - syn_total
