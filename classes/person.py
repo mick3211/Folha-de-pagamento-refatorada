@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from datetime import time
+import time
 from classes.syndicate import new_syndicate
 from classes.adress import Adress
 from classes.hist import SalesHis, ClockHis

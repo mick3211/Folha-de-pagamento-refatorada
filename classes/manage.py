@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from datetime import date
 from classes.states import State
 from classes.agenda import Semanal, Mensal
 
@@ -71,7 +72,7 @@ class Manager():
         print('--Agenda adicionada--', cls._agendas[-1])
 
     @classmethod
-    def pending_pays(cls, time):
+    def pending_pays(cls, time=date.today()):
 
         pending = list()
 
