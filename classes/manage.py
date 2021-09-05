@@ -69,8 +69,3 @@ class Manager():
     def add_agenda(cls, agenda):
         cls._agendas.append(agenda)
         print('--Agenda adicionada--', cls._agendas[-1])
-
-    @staticmethod
-    def update_agenda(employee, agenda: str):
-        type, args = agenda.split(' ')
-        employee.agenda.set_new_agenda()

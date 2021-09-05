@@ -13,10 +13,6 @@ class AbstractAgenda(metaclass = ABCMeta):
     def set_new_agenda(self, agenda):
         self.new_agenda = agenda
 
-    def update_agenda(self):
-        if self.new_agenda:
-            self.new_agenda = self.new_agenda[:]
-
     @abstractmethod
     def set_payday():
         pass

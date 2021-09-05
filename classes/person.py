@@ -30,17 +30,21 @@ class AbstractEmployee(metaclass = ABCMeta):
         self.his = None
         self.set_syndicate('NoSyndicate')
         self.set_comissao(comissao)
+        self.set_agenda(self.agenda)
 
     def __str__(self):
         return (f'//{type(self).__name__}, salário:{self.salary}, paymethod:{self.paymethod}, '
         f'syndicate:{type(self.syndicate).__name__}, name:{self.name}, cpf:{self.cpf}, '
-        f'endereço: {self.adress}, sindicato:{self.syndicate}, agenda:{self.agenda}')
+        f'endereço: {self.adress}, sindicato:{self.syndicate}, agenda:{self.agenda}, {self.new_agenda}')
 
     def set_syndicate(self, syndicate, id=None, value=0):
         self.syndicate = new_syndicate(syndicate, id, value)
         
-    def set_agenda(self, type, *args):
-        self.agenda = create_agenda(type, *args)
+    def set_agenda(self, agenda):
+        self.new_agenda = agenda
+
+    def update_agenda(self):
+        self.agenda = self.new_agenda[:]
 
     @abstractmethod
     def set_comissao(self, value):
@@ -62,7 +66,7 @@ class AbstractEmployee(metaclass = ABCMeta):
 class Hourly(AbstractEmployee):
 
     def __init__(self, salary, paymethod, comissao, person: Person):
-        self.set_agenda('Semanal', 1, 4)
+        self.agenda = create_agenda('Semanal', 1, 4)
         super().__init__(salary, paymethod, comissao, person)
         self.his = ClockHis()
 
@@ -82,7 +86,7 @@ class Hourly(AbstractEmployee):
 class Salaried(AbstractEmployee):
 
     def __init__(self, salary, paymethod, comissao, person: Person):
-        self.set_agenda('Mensal', 30)
+        self.agenda = create_agenda('Mensal', 30)
         super().__init__(salary, paymethod, comissao, person)
 
     def set_comissao(self, value):
@@ -101,7 +105,7 @@ class Salaried(AbstractEmployee):
 class Commisioned(AbstractEmployee):
 
     def __init__(self, salary, paymethod, comissao, person: Person):
-        self.set_agenda('Semanal', 2, 4)
+        self.agenda = create_agenda('Semanal', 2, 4)
         super().__init__(salary, paymethod, comissao, person)
         self.his = SalesHis()
 

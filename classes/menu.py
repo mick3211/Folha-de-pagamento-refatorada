@@ -66,7 +66,7 @@ class Menu():
                 paymethod = values['paymethod']
                 adress = (values['cep'], values['rua'], values['numero'], values['bairro'], values['cidade'], values['estado'])
                 emplo_class = TYPES[values['type']]
-                
+
                 try: taxa = float(values['taxa']) if values['syndicate'] else None
                 except ValueError: sg.popup('VALOR DA TAXA SINDICAL INVÁLIDO', title='ERRO')
                 else:
@@ -125,11 +125,6 @@ class Menu():
                 syndicate = 'NoSyndicate' if not values['syndicate'] else 'Syndicate'
                 adress = (values['cep'], values['rua'], values['numero'], values['bairro'], values['cidade'], values['estado'])
                 taxa = None
-                if values['agenda'] == 'Não alterar': agenda = None
-                else:
-                    agenda = values['agenda'].split('.')
-                    agenda = int(agenda[0])
-
                 try:
                     comissao = float(values['comissao'])/100
                 except ValueError:
@@ -144,6 +139,12 @@ class Menu():
                             new_employee = Person(name, employee.cpf).create_employee(emplo_class, employee.salary, paymethod, comissao)
                             new_employee.set_syndicate(syndicate, employee.cpf, taxa)
                             new_employee.adress.set_all(*adress)
+
+                            if values['agenda'] != 'Não alterar':
+                                agenda = values['agenda'].split('.')
+                                agenda = int(agenda[0])
+                                new_employee.set_agenda(manager._agendas[agenda])
+                                
                             manager.update_employee(employee.cpf, new_employee)
                             sg.popup('Alterações Salvas', title = 'Confirmação')
                             break

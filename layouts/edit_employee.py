@@ -18,7 +18,7 @@ def edit_employee_layout(employee, agendas: list):
             [sg.Text('Tipo:')],
             [sg.Combo(['Horista', 'Assalariado', 'Comissionado'], key='type', default_value=TYPES[type(employee).__name__], enable_events=True, readonly=True)],
             [sg.Text('Salário:')],
-            [sg.Input(f"R$ {info_list['salary']}", disabled=True, size=(10, 1))],
+            [sg.Input(f"R$ {info_list['salary']}", disabled=True, size=(14, 1))],
             [sg.Frame('',[
                 [sg.Text('Porcentagem da comissão:', key='t1'), sg.Input(0, size=(3,1), key='comissao')]
             ], key='com', visible=False)],
