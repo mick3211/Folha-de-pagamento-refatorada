@@ -12,7 +12,7 @@ while True:
     if event == 'Adicionar empregado': Menu.add_employee()
     if event == 'Desfazer': Menu.undo()
     if event == 'Refazer': Menu.redo()
-    #if event == 'agenda': Menu.add_agenda()
+    if event == 'agenda': Menu.add_agenda()
     #if event == 'pay': Menu.pay_schedule()
     if event == 'Editar empregado':
         select = Menu.select_employee()

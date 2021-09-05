@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from classes.states import State
+from classes.agenda import Semanal, Mensal
 
 
 class Manager():
@@ -7,7 +8,7 @@ class Manager():
     __instance = None
     _state = State()
     _employee_list = {}
-    _agendas = [[30, None], [14, 4], [7, 4]]
+    _agendas = [Semanal(1, 4), Semanal(2, 4), Mensal(30)]
 
     # Garante que apenas uma instância da classe será criada
     def __new__(cls):
@@ -63,3 +64,13 @@ class Manager():
         cls._state.stack('InsertHisState', (employee.syndicate.taxe_his))
 
         print('--Valor registrado--', employee.syndicate)
+
+    @classmethod
+    def add_agenda(cls, agenda):
+        cls._agendas.append(agenda)
+        print('--Agenda adicionada--', cls._agendas[-1])
+
+    @staticmethod
+    def update_agenda(employee, agenda: str):
+        type, args = agenda.split(' ')
+        employee.agenda.set_new_agenda()

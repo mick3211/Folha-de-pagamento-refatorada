@@ -3,8 +3,10 @@ from layouts.add_employee import add_employee_layout
 from layouts.edit_employee import edit_employee_layout
 from layouts.select_employee import select_employee_layout
 from layouts.reg_info import reg_info_layout
+from layouts.add_agenda import add_agenda_layout
 from classes.person import Person
 from classes.manage import Manager
+from classes.agenda import create_agenda
 
 
 TYPES = {'Assalariado': 'Salaried', 'Comissionado': 'Commisioned', 'Horista': 'Hourly'}
@@ -31,9 +33,7 @@ class Menu():
                     return False
                 if event == 'Selecionar':
                     window.close(); del window
-                    if values['selected_employee'] in employee_list.keys():
-                        return employee_list[values['selected_employee']]
-                    else: sg.popup('FUNCIONÁRIO INVÁLIDO!', title='ERRO')
+                    return employee_list[values['selected_employee']]
 
     def add_employee():
         window = sg.Window('Adicionar empregado', add_employee_layout())
@@ -65,36 +65,34 @@ class Menu():
                 syndicate = 'Syndicate' if values['syndicate'] else 'NoSyndicate'
                 paymethod = values['paymethod']
                 adress = (values['cep'], values['rua'], values['numero'], values['bairro'], values['cidade'], values['estado'])
-
-                try: emplo_class = TYPES[values['type']]
-                except KeyError: sg.popup('TIPO INVÁLIDO', title='ERRO')
+                emplo_class = TYPES[values['type']]
+                
+                try: taxa = float(values['taxa']) if values['syndicate'] else None
+                except ValueError: sg.popup('VALOR DA TAXA SINDICAL INVÁLIDO', title='ERRO')
                 else:
-                    try: taxa = float(values['taxa']) if values['syndicate'] else None
-                    except ValueError: sg.popup('VALOR DA TAXA SINDICAL INVÁLIDO', title='ERRO')
+                    try: salary = float(values['salary'])
+                    except ValueError: sg.popup('VALOR DO SALÁRIO INVÁLIDO')
                     else:
-                        try: salary = float(values['salary'])
-                        except ValueError: sg.popup('VALOR DO SALÁRIO INVÁLIDO')
+                        try: comissao = float(values['comissao'])/100 if values['type'] == 'Comissionado' else None
+                        except ValueError: sg.popup('VALOR DA COMISSÃO INVÁLIDO')
                         else:
-                            try: comissao = float(values['comissao'])/100 if values['type'] == 'Comissionado' else None
-                            except ValueError: sg.popup('VALOR DA COMISSÃO INVÁLIDO')
+                            if cpf == '' or cpf in Manager._employee_list.keys(): sg.popup('CPF JÁ CADASTRADO!', title='ERRO')
+                            elif name == '': sg.popup('INSIRA UM NOME VÁLIDO', title='ERRO')
                             else:
-                                if cpf == '' or cpf in Manager._employee_list.keys(): sg.popup('CPF JÁ CADASTRADO!', title='ERRO')
-                                elif name == '': sg.popup('INSIRA UM NOME VÁLIDO', title='ERRO')
-                                else:
-                                    employee = Person(name, cpf).create_employee(emplo_class, salary, paymethod, comissao)
-                                    employee.set_syndicate(syndicate, cpf, taxa)
-                                    employee.set_comissao(comissao)
-                                    employee.adress.set_all(*adress)
-                                    Manager.add_employee(cpf, employee)
-                                    sg.popup('Empregado adicionado')
-                                    break
+                                employee = Person(name, cpf).create_employee(emplo_class, salary, paymethod, comissao)
+                                employee.set_syndicate(syndicate, cpf, taxa)
+                                employee.set_comissao(comissao)
+                                employee.adress.set_all(*adress)
+                                Manager.add_employee(cpf, employee)
+                                sg.popup('Empregado adicionado')
+                                break
 
         window.close(); del window
 
     def edit_employee(employee):
 
         manager = Manager()
-        window = sg.Window('Editar empregado', edit_employee_layout(employee), enable_close_attempted_event=True)
+        window = sg.Window('Editar empregado', edit_employee_layout(employee, manager._agendas), enable_close_attempted_event=True)
 
         while True:
             event, values = window.read()
@@ -189,5 +187,34 @@ class Menu():
                 else:
                     manager.insert_service_taxe(employee, serv_taxe)
                     sg.popup(f'Taxa de serviço no valor de R${serv_taxe} registrada', title='Taxa registrada')
+
+        window.close(); del window
+
+    def add_agenda():
+
+        manager = Manager()
+        window = sg.Window('Adicionar agenda', add_agenda_layout())
+
+        while True:
+            event, values = window.read()
+            
+            if event == sg.WINDOW_CLOSED or event == 'Voltar': break
+
+            if event == 'Adicionar':
+                agenda = str(values['agenda'])
+
+                name, *args = agenda.split(' ')
+
+                name = name.capitalize()
+
+                if name not in ['Semanal', 'Mensal']:
+                    sg.popup('TIPO DE AGENDA INVÁLIDO', title='ERRO')
+                else:
+                    try:
+                        args = list(map(int, args))
+                    except TypeError:
+                        sg.popup('VALORES DA AGENDA INVÁLIDOS', title='ERRO')
+                    else:
+                        manager.add_agenda(create_agenda(name, *args))
 
         window.close(); del window
