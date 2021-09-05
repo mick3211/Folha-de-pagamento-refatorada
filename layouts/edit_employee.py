@@ -1,15 +1,12 @@
 import PySimpleGUI as sg
 
-def edit_employee_layout(employee):
+def edit_employee_layout(employee, agendas: list):
 
     TYPES = {'Salaried': 'Assalariado', 'Commisioned': 'Comissionado', 'Hourly': 'Horista'}
     info_list = employee.__dict__
     adress_list = employee.adress.__dict__
-    agendas = ['Não alterar']
-
-    #for n, i in enumerate(Sys.agendas):
-     #   if i[0] == 1: agendas.append(f'{n}. Mesalmente, todo dia {i[1]}')
-      #  else: agendas.append(f'{n}. A cada {i[1]} semanas toda {DIAS[i[2]]}')
+    agendas_list = ['Não alterar']
+    agendas_list.extend(i.to_string() for i in agendas)
 
     return (
         [sg.Frame('Informações pessoais', [
@@ -18,14 +15,14 @@ def edit_employee_layout(employee):
         ], key='personal_info')],
         [sg.Frame('Definições do empregado', [
             [sg.Text('Tipo:')],
-            [sg.Combo(['Horista', 'Assalariado', 'Comissionado'], key='type', default_value=TYPES[type(employee).__name__], enable_events=True)],
+            [sg.Combo(['Horista', 'Assalariado', 'Comissionado'], key='type', default_value=TYPES[type(employee).__name__], enable_events=True, readonly=True)],
             [sg.Frame('',[
                 [sg.Text('Porcentagem da comissão:', key='t1'), sg.Input(0, size=(3,1), key='comissao')]
             ], key='com', visible=False)],
             [sg.Text('Método de pagamento:')],
-            [sg.Combo(['Cheque pelos Correios', 'Cheque em mãos', 'Depósito bancário'], key='paymethod', default_value=info_list['paymethod'])],
+            [sg.Combo(['Cheque pelos Correios', 'Cheque em mãos', 'Depósito bancário'], key='paymethod', default_value=info_list['paymethod'], readonly=True)],
             [sg.Text('Agenda de pagamento (aplicado após o próximo pagamento)')],
-            [sg.Combo(agendas, agendas[0], key='agenda')],
+            [sg.Combo(agendas_list, agendas_list[0], key='agenda', readonly=True)],
             [sg.Text('Faz parte do sindicato?')],
             [sg.Radio('Sim', group_id='syn', key='syndicate', enable_events=True, default=False if type(employee.syndicate).__name__ == 'NoSyndicate' else True),
                 sg.Radio('Não', group_id='syn', key='not_syndicate', enable_events=True, default=True if type(employee.syndicate).__name__ == 'NoSyndicate' else False)],

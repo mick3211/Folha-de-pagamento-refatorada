@@ -6,6 +6,6 @@ def select_employee_layout(employee_list):
 
     return (
         [sg.Text('Selecione o empregado:')],
-        [sg.Combo(i, key='selected_employee', default_value=i[0])],
+        [sg.Combo(i, key='selected_employee', default_value=i[0], readonly=True)],
         [sg.Button('Selecionar')],
     )
