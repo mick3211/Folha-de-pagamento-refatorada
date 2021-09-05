@@ -48,6 +48,7 @@ class Mensal(AbstractAgenda):
     def __init__(self, day):
         super().__init__()
         self.day = day
+        self.week = 4
         self.payday = self.payday = self.payday.replace(day=self.day)
 
     def set_payday(self, init=date.today()):
