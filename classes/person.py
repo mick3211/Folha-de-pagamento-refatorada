@@ -120,6 +120,3 @@ class Commisioned(AbstractEmployee):
 
     def insert_his(self, value):
         self.his.new_sale(time.time(), value)
-
-#p = Person('Mickael', '123').create_employee(Hourly, 4500, "Deposito")
-#p2 = Person('José', '123').create_employee(Commisioned, 4500, "Deposito")
