@@ -13,6 +13,9 @@ class AbstractAgenda(metaclass = ABCMeta):
     def set_new_agenda(self, agenda):
         self.new_agenda = agenda
 
+    def work_weeks(self):
+        return self.week
+
     @abstractmethod
     def set_payday():
         pass
