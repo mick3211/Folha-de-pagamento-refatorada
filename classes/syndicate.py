@@ -12,6 +12,10 @@ class AbstractSyndicate(metaclass = ABCMeta):
         return f'taxas de serviço:{self.taxe_his}, id:{self.id}, taxa:{self.default_taxe}'
 
     @abstractmethod
+    def get_total(self):
+        pass
+
+    @abstractmethod
     def set_id(self, id):
         pass
 
@@ -30,6 +34,9 @@ class AbstractSyndicate(metaclass = ABCMeta):
 
 class Syndicate(AbstractSyndicate):
 
+    def get_total(self):
+        return self.default_taxe + sum(self.taxe_his)
+
     def set_id(self, id):
         self.id = id
 
@@ -44,6 +51,9 @@ class Syndicate(AbstractSyndicate):
 
 
 class NoSyndicate(AbstractSyndicate):
+
+    def get_total(self):
+        return 0
 
     def set_id(self, id):
         self.id = None
