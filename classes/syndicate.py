@@ -64,7 +64,7 @@ class NoSyndicate(AbstractSyndicate):
     def set_default_taxe(self, value: float):
         self.default_taxe = 0
 
-    def clear_his():
+    def clear_his(self):
         pass
 
 def new_syndicate(syndicate, id=None, value=0):
