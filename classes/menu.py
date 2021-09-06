@@ -246,7 +246,7 @@ class Menu():
     def pay_schedule():
 
         manager = Manager()
-        pending = manager._employee_list.values()
+        pending = manager.pending_pays()
         window = sg.Window('Folha de pagamento', pay_schedule_layout(pending, date.today().strftime("%d/%m/%Y")))
 
         while True:
