@@ -76,7 +76,7 @@ class Manager():
 
         pending = list()
 
-        for emplo in cls._employee_list:
+        for emplo in cls._employee_list.values():
             if emplo.agenda.payday == time:
                 pending.append(emplo)
         return pending
