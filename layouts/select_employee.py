@@ -2,7 +2,7 @@ import PySimpleGUI as sg
 
 def select_employee_layout(employee_list: dict):
 
-    i = employee_list.keys()
+    i = list(employee_list.keys())
 
     return (
         [sg.Text('Selecione o empregado:')],
