@@ -142,7 +142,7 @@ class Menu():
                             new_employee = Person(name, employee.cpf).create_employee(emplo_class, employee.salary, paymethod, comissao)
                             new_employee.set_syndicate(syndicate, employee.cpf, taxa)
                             new_employee.adress.set_all(*adress)
-                            new_employee.agenda = emplo_class.agenda
+                            new_employee.agenda = employee.agenda
 
                             if values['agenda'] != 'Não alterar':
                                 agenda = values['agenda'].split('.')
