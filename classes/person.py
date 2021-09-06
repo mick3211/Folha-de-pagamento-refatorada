@@ -135,9 +135,10 @@ class Commisioned(AbstractEmployee):
         self.comissao = value
 
     def insert_his(self, value):
-        self.his.new_sale(time.time(), value)
+        self.his.new_sale(value)
 
     def accumulated_payment(self):
         syn_total = self.syndicate.get_total()
+        com_total = self.his.get_total()
         salary = self.salary/2
-        return salary*self.agenda.work_weeks() - syn_total
+        return salary*self.agenda.work_weeks() - syn_total + com_total*self.comissao
