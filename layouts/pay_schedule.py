@@ -6,7 +6,7 @@ def pay_schedule_layout(emplo_list: list, date):
     pay_list = list()
     
     for emplo in emplo_list:
-        pay_list.append(f'{emplo.name}//R${emplo.salary}//{emplo.paymethod}')
+        pay_list.append(f'{emplo.name}//R${emplo.accumulated_payment()}//{emplo.paymethod}')
 
     if len(emplo_list) == 0:
         return(
