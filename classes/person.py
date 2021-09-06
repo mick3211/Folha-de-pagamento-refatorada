@@ -44,7 +44,7 @@ class AbstractEmployee(metaclass = ABCMeta):
         self.new_agenda = agenda
 
     def update_agenda(self):
-        self.agenda = self.new_agenda[:]
+        self.agenda = self.new_agenda
         print('Agenda atualizada', self.agenda)
 
     def clear_his(self):
@@ -55,8 +55,8 @@ class AbstractEmployee(metaclass = ABCMeta):
         self.clear_his()
         self.update_agenda()
         self.agenda.set_payday()
-
-        return payment
+        self.syndicate.clear_his()
+        print('Funcionário pago',payment)
 
     @abstractmethod
     def set_comissao(self, value):
@@ -112,6 +112,7 @@ class Salaried(AbstractEmployee):
     def set_comissao(self, value):
         return super().set_comissao(value)
 
+    @staticmethod
     def clear_his():
         pass
 

@@ -1,9 +1,11 @@
 import PySimpleGUI as sg
+from datetime import date
 from layouts.add_employee import add_employee_layout
 from layouts.edit_employee import edit_employee_layout
 from layouts.select_employee import select_employee_layout
 from layouts.reg_info import reg_info_layout
 from layouts.add_agenda import add_agenda_layout
+from layouts.pay_schedule import pay_schedule_layout
 from classes.person import Person
 from classes.manage import Manager
 from classes.agenda import create_agenda
@@ -238,5 +240,24 @@ class Menu():
                                 else:
                                     args[1] = DAYS[args[1]]
                                     manager.add_agenda(create_agenda(name, *args))
+
+        window.close(); del window
+
+    def pay_schedule():
+
+        manager = Manager()
+        pending = manager._employee_list.values()
+        window = sg.Window('Folha de pagamento', pay_schedule_layout(pending, date.today().strftime("%d/%m/%Y")))
+
+        while True:
+            event, values = window.read()
+            
+            if event == sg.WINDOW_CLOSED or event == 'Voltar': break
+
+            if event == 'Pagar':
+
+                for emplo in pending:
+                    emplo.pay()
+                sg.popup('Funcionários pagos')
 
         window.close(); del window
