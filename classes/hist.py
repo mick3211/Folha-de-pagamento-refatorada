@@ -18,8 +18,11 @@ class His():
 
 class SalesHis(His):
 
-    def new_sale(self, time, value):
-        self._values.append({time: value})
+    def new_sale(self, value):
+        self._values.append(value)
+
+    def get_total(self):
+        return sum(self._values)
 
 
 class ClockHis(His):
